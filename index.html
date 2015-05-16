@@ -1,0 +1,114 @@
+<!doctype html />
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+	</head>
+	<body ng-app="caculator">
+		<caculator>
+			<caculator-display>
+			</caculator-display>
+			<button caculator-button="1">1</button>
+			<button caculator-button="2">2</button>
+			<button caculator-button="3">3</button>
+			<button caculator-button="4">4</button>
+			<button caculator-button="5">5</button>
+			<button caculator-button="6">6</button>
+			<button caculator-button="7">7</button>
+			<button caculator-button="8">8</button>
+			<button caculator-button="9">9</button>
+			<button caculator-button="0">0</button>
+			<button caculator-button="-">-</button>
+			<button caculator-button="+">+</button>
+			<button caculator-button="c">c</button>
+			<button caculator-button="-1">-1</button>
+			<button caculator-button=".">.</button>
+			<button caculator-button="*">*</button>
+			<button caculator-button="/">/</button>
+			<button caculator-button="=">=</button>
+		</caculator>
+		
+		<script src="node_modules/jquery/dist/jquery.js"></script>
+		<script src="node_modules/angular/angular.js"></script>
+		<script type="text/javascript">
+		var caculator = angular.module('caculator', []).directive('caculator', ['$parse', function($parse){
+		return {
+			scope: {}, // {} = isolate, true = child, false/undefined
+			controller: function($scope, $element, $attrs, $transclude,$parse) {
+				var caculatorList = [0];
+				var result = {};
+				result.display=caculatorList.join('');
+				this.getResult=function(){
+					return result;
+				}
+				this.push=function(ele){
+					//when the  ele is number and the first element is 0 in the caculatorList,0 will be replace by number,
+					if(caculatorList[0]===0&&Number(ele)===Number(ele)){
+						caculatorList.pop();
+						result.display='';
+					}
+					caculatorList.push(ele);
+					result.display+=''+ele;
+				}
+				this.clean=function(){
+					caculatorList=[0];
+					result.display=0;
+
+				}
+				this.pop=function(){
+					console.log(caculatorList);
+					if(caculatorList.length>=2){
+						caculatorList.pop();
+						result.display=caculatorList.join('');
+					}else {
+						this.clean();
+					}
+				}
+				this.caculate=function(){
+					$parse("answer="+result.display)($scope);
+					caculatorList=[$scope.answer];
+					result.display=$scope.answer;
+
+				}
+			},
+
+			};
+		}]);
+		caculator.directive('caculatorDisplay',function($timeout){
+			return {
+				scope: {},
+				templateUrl:'display.html',
+				require: '^caculator',
+				replace:true,
+				link:function($scope,element, attrs, caculatorCtrl){
+				$scope.result=caculatorCtrl.getResult();
+				}
+			}
+		});
+		caculator.directive('caculatorButton',function(){
+			return {
+				scope: {
+					caculatorButton:'@'
+				},
+				require: '^caculator',
+				link:function($scope,element, attrs, caculatorCtrl){
+				   element.bind('click',function(){
+				   	$scope.$apply(function(){
+				   		switch($scope.caculatorButton){
+				   			case '=': caculatorCtrl.caculate();break;
+				   			case 'c': caculatorCtrl.clean();break;
+				   			case '-1': caculatorCtrl.pop();break;
+				   			default :caculatorCtrl.push($scope.caculatorButton);
+				   		}
+				   	})
+				   });
+				}
+			}
+		});
+		</script>
+		  <script type="text/ng-template" id="display.html">
+		  <input ng-model="result.display" maxlength="10" style="text-align:right"  disabled="true"></input>
+        </script>
+        
+	</body>
+</html>

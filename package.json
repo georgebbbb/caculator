@@ -1,0 +1,16 @@
+{
+  "name": "caculator",
+  "version": "1.0.0",
+  "description": "teambition interview question",
+  "main": "index.js",
+  "dependencies": {
+    "angular": "^1.3.8",
+    "jquery": "^2.1.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jarvan Yang <510223397@qq.com>",
+  "license": "MIT"
+}
