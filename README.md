@@ -1,3 +1,3 @@
 # caculator
 teambition interview question
-open index.html
+just open index.html
